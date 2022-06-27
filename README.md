@@ -1,42 +1,45 @@
-# Developing AI Agent with PEAS Description
+## EX NO : 01
+## DATE : 04-04-2022
+# <p align="center"> Developing AI Agent with PEAS Description</p>
+
 
 ## AIM
 
 To find the PEAS description for the given AI problem and develop an AI agent.
 
 ## THEORY
-A vacuum-cleaner world with just two locations.
+A vacuum-cleaner world with just two locations.<br/>Each location can be clean or dirty.<br/>The agent can move left or right and can clean the square that it occupies.
 
-<br/>Each location can be clean or dirty.
-
-<br/>The agent can move left or right and can clean the square that it occupies.
 
 ## PEAS DESCRIPTION
-| Agent Type  | Performance Measure | Environment  | Actuators | Sensors |
-| :-------------: | :-------------: | :-------------: | :-------------: | :-------------: |
-| Vaccum-Cleaner  | Cleanliness, Number of Movements  | Rooms  | Wheels, suction tool  | Location, Cleanliness |
-
-
+| Agent Type | Performance Measure | Environment | Actuators | Sensors |
+| :--------------: | :--------------: | :--------------: | :--------------: | :--------------: |
+| Vaccum Cleaner | Cleanliness, Number of Movements | Rooms, Dust | Steering, Cleanliness | Location, Motion |
 
 ## DESIGN STEPS
 ### STEP 1:
-The inputs are location of the agent and the status of the location.
+Identifying the input:
+
 ### STEP 2:
-The output of the system is Right Left and Suck.
-### STEP 3: 
-Agent Type:Vaccum Cleaner
-<br/>Performance Measure: Cleanliness , Number of Movements
-<br/>Environment: Rooms
-<br/>Actuators: Wheels and Suction tool
-<br/>Sensor: Location Sensor and Cleanliness sensor
+Identifying the output:
+
+### STEP 3:
+Developing the PEAS description:
 ### STEP 4:
-The agent should detect the location and suck if the location it is dirty,else it should move to the next location.
+Implementing the AI agent
+
 ### STEP 5:
-The performance is measured with the number of movements and the cleaning action of the agent.
+Measure the performance parameters
 
 ## PROGRAM
-```python3
+
+```
+Developed By :krishna moorthy 
+Reg.no : 212220230025
+```
+```python
 import random
+
 class Thing:
     """
         This represents any physical object that can appear in an Environment.
@@ -68,6 +71,7 @@ class Agent(Thing):
 
 def TableDrivenAgentProgram(table):
     """
+    [Figure 2.7]
     This agent selects an action based on the percept sequence.
     It is practical only for tiny domains.
     To customize it, provide as table a dictionary of all
@@ -76,42 +80,32 @@ def TableDrivenAgentProgram(table):
     percepts = []
 
     def program(percept):
+        action =None
         percepts.append(percept)
-        action=table.get(tuple(percept))
+        action=table.get(tuple(percepts))
         return action
 
     return program
 
-loc_A, loc_B, loc_C, loc_D, loc_E, loc_F, loc_G, loc_H, loc_I = (0,0), (0,1), (0,2), (1,2), (1,1), (1,0), (2,0), (2,1), (2,2) # The two locations for the Vacuum world
-#G-20 H-21 I-22
-#F-10 E-11 D-12
-#A-00 B-01 C-02
+loc_A, loc_B = (0, 0), (1, 0)  # The two locations for the Vacuum world
+
 
 def TableDrivenVacuumAgent():
     """
     Tabular approach towards vacuum world
     """
-    table = {(loc_A, 'Clean'): 'Right1',
-             (loc_A, 'Dirty'): 'Suck',
-             (loc_B, 'Clean'): 'Right2',
-             (loc_B, 'Dirty'): 'Suck',
-             (loc_C, 'Clean'): 'Up1',
-             (loc_C, 'Dirty'): 'Suck',
-             (loc_D, 'Clean'): 'Left1',
-             (loc_D, 'Dirty'): 'Suck',
-             (loc_E, 'Clean'): 'Left2',
-             (loc_E, 'Dirty'): 'Suck',
-             (loc_F, 'Clean'): 'Up2',
-             (loc_F, 'Dirty'): 'Suck',
-             (loc_G, 'Clean'): 'Right3',
-             (loc_G, 'Dirty'): 'Suck',
-             (loc_H, 'Clean'): 'Right4',
-             (loc_H, 'Dirty'): 'Suck',
-             (loc_I, 'Clean'): 'Start',
-             (loc_I, 'Dirty'): 'Suck',
-    }
+    table = {((loc_A, 'Clean'),): 'Right',
+             ((loc_A, 'Dirty'),): 'Suck',
+             ((loc_B, 'Clean'),): 'Left',
+             ((loc_B, 'Dirty'),): 'Suck',
+             ((loc_A, 'Dirty'), (loc_A, 'Clean')): 'Right',
+             ((loc_A, 'Clean'), (loc_B, 'Dirty')): 'Suck',
+             ((loc_B, 'Clean'), (loc_A, 'Dirty')): 'Suck',
+             ((loc_B, 'Dirty'), (loc_B, 'Clean')): 'Left',
+             ((loc_A, 'Dirty'), (loc_A, 'Clean'), (loc_B, 'Dirty')): 'Suck',
+             ((loc_B, 'Dirty'), (loc_B, 'Clean'), (loc_A, 'Dirty')): 'Suck'}
     return Agent(TableDrivenAgentProgram(table))
-#right1,2,3,4 start left1,2 up1,2
+
 
 class Environment:
     """Abstract class representing an Environment. 'Real' Environment classes
@@ -203,14 +197,7 @@ class TrivialVacuumEnvironment(Environment):
     def __init__(self):
         super().__init__()
         self.status = {loc_A: random.choice(['Clean', 'Dirty']),
-                       loc_B: random.choice(['Clean', 'Dirty']),
-                       loc_C: random.choice(['Clean', 'Dirty']),
-                       loc_D: random.choice(['Clean', 'Dirty']),
-                       loc_E: random.choice(['Clean', 'Dirty']),
-                       loc_F: random.choice(['Clean', 'Dirty']),
-                       loc_G: random.choice(['Clean', 'Dirty']),
-                       loc_H: random.choice(['Clean', 'Dirty']),
-                       loc_I: random.choice(['Clean', 'Dirty']),}
+                       loc_B: random.choice(['Clean', 'Dirty'])}
 
     def thing_classes(self):
         return [ TableDrivenVacuumAgent]
@@ -222,61 +209,34 @@ class TrivialVacuumEnvironment(Environment):
     def execute_action(self, agent, action):
         """Change agent's location and/or location's status; track performance.
         Score 10 for each dirt cleaned; -1 for each move."""
-        if action=='Right1':
+
+        if action=='Right':
             agent.location = loc_B
             agent.performance -=1
-        elif action=='Right2':
-            agent.location = loc_C
-            agent.performance -=1
-        elif action=='Right3':
-            agent.location = loc_H
-            agent.performance -=1
-        elif action=='Right4':
-            agent.location = loc_I
-            agent.performance -=1
-        elif action=='Left1':
-            agent.location = loc_E
-            agent.performance -=1
-        elif action=='Left2':
-            agent.location = loc_F
-            agent.performance -=1
-        elif action=='Up1':
-            agent.location = loc_D
-            agent.performance -=1
-        elif action=='Up2':
-            agent.location = loc_G
-            agent.performance -=1
-        elif action=='Start':
+        elif action=='Left':
             agent.location = loc_A
             agent.performance -=1
         elif action=='Suck':
             if self.status[agent.location]=='Dirty':
                 agent.performance+=10
-            self.status[agent.location]='Clean'
+                self.status[agent.location]='Clean'
 
     def default_location(self, thing):
         """Agents start in either location at random."""
-        return random.choice([loc_A, loc_B, loc_C, loc_D, loc_E, loc_F, loc_G, loc_H, loc_I])
-
-
+        return random.choice([loc_A, loc_B])
+        
 if __name__ == "__main__":
     agent = TableDrivenVacuumAgent()
     environment = TrivialVacuumEnvironment()
     environment.add_thing(agent)
-    print('\033[1m' + 'Before Action\n' + '\033[0m',environment.status)
-    print('\033[1m' + 'Agent Location\n' + '\033[0m',agent.location)
-    environment.run(steps=15)
-    print('\033[1m' + 'After Action\n' + '\033[0m',environment.status)
-    print('\033[1m' + 'Agent Location\n' + '\033[0m',agent.location)
-    print('\033[1m' + 'Agent Performance\n' + '\033[0m',agent.performance)
-```
-
+    print(environment.status)
+    environment.run(steps=10)
+    print(environment.status)
+    print(agent.performance)
+    
+``` 
 ## OUTPUT
-
-
-![kimo 2](https://user-images.githubusercontent.com/75241177/167346488-67166991-2a5c-4e54-9901-71a890510f81.png)
-
+![Screenshot 2022-04-06 204655](https://user-images.githubusercontent.com/75235789/162009201-e8dc4b61-6b8c-498c-9fdc-463dc9066657.jpg)
 
 ## RESULT
-
-Thus, an AI agent was developed and PEAS description is given. 
+Thus, an AI agent is developed.
